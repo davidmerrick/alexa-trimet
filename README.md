@@ -3,6 +3,7 @@ Alexa Skill for TriMet Arrivals, written in NodeJS.
 ## Usage
 
 "Alexa, ask TriMet about stop 755."
+
 "Alexa, ask TriMet to get next arrivals for bus 20 at stop 755."
 etc.
 
