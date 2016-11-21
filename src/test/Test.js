@@ -4,6 +4,7 @@ var SpeechHelper = require('../utils/SpeechHelper');
 var Arrival = rewire('trimet-api-client/Arrival');
 
 describe("Speech Helper Test", function(){
+    // Todo: Work in progress. These tests aren't working yet.
     it("Should output correctly for a single arrival.", function(){
         var arrivalData = {
             departed: null,
