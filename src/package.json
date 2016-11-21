@@ -1,0 +1,17 @@
+{
+  "name": "TriMet",
+  "version": "1.0.0",
+  "description": "Alexa skill for looking up TriMet arrivals at bus stops.",
+  "keywords": [
+    "Portland",
+    "PDX",
+    "TriMet"
+  ],
+  "author": "David Merrick",
+  "dependencies": {
+    "trimet-api-client": "^1.0.3"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0"
+  }
+}
