@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/davidmerrick/alexa-trimet.svg?branch=master)](https://travis-ci.org/davidmerrick/alexa-trimet)
+
 Alexa Skill for TriMet Arrivals, written in NodeJS. This is meant to be run as an AWS Lambda function, with the following environment variables set:
 
 * APP_ID: Alexa App ID.
