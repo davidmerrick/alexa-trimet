@@ -1,6 +1,6 @@
 language: node_js
 script: cd src; npm test
-before_deploy: zip src.zip
+before_deploy: zip src.zip .
 deploy:
   provider: s3
   access_key_id: AKIAI4ADBAIGJ5VGTW7Q
