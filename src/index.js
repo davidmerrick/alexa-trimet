@@ -47,6 +47,10 @@ TriMet.prototype.intentHandlers = {
         var busID = intent.slots.BusID.value;
         var stopID = intent.slots.StopID.value;
         TriMetAPIInstance.getNextArrivalForBus(stopID, busID, function(arrival){
+            if(!arrival){
+                response.tell("Sorry, I was not able to find information for bus " + busID + " at stop " + stopID);
+                return;
+            }
             var minutesRemaining = arrival.getMinutesUntilArrival();
             var minutePronunciation = SpeechHelper.getMinutePronunciation(minutesRemaining);
             response.tell(minutePronunciation + " until the next bus " + busID + " at stop " + stopID);
@@ -73,7 +77,9 @@ TriMet.prototype.intentHandlers = {
 };
 
 function handleWelcomeRequest(response) {
-    response.tell("Welcome to TriMet Arrivals.");
+    var speechOutput = "Welcome to TriMet Arrivals. I can retrieve arrival times for bus and train stops in Portland, Oregon."
+    var repromptText = "Which bus stop would you like information for?";
+    response.ask(speechOutput, repromptText);
 }
 
 function handleHelpRequest(response) {
