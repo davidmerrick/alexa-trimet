@@ -1,2 +1,12 @@
 language: node_js
 script: cd src; npm test
+deploy:
+  provider: s3
+  access_key_id: AKIAI4ADBAIGJ5VGTW7Q
+  secret_access_key:
+    secure: HCfdUDxfaFA5PBZ7Tr99WYAXL6G8IwB+FWnf8I9pFitIxialO0UCq85EzZ2Uo4fxZV2M3qiCad/4Lm4vsYEr9b5Nfu5uuh8Wv1NFq9v5we9rSVku1beL6rNQK7MaSXGUQ6ZmopSYzWuIK+FdWi0NNhiB4r52bxmSsY4KoV2OD+eeXC4sctLSdsbr27LDTNDd/vS4u7IJ8iSymNeR2zyXfrI0vBHn9jDpCBAJJLFAyQqg7ZISPDN0XYAtL4Dcls1CeyS+mB1tPBHyZ7Jxg47ujDjeAjDKrpIqa5NM4QkMDub6hn9k1KCMLKHClFd2nKrdg8KRvZN9loTtuedCivCrYEhD4UVLrhqXORKGSQyQ33/vnCYFdRhEpd3RSffSGf4sdP4Eqj0OHENiqgBLAQEAvqCAd4bpkjmbfttzGZaoRk7NzFPe94Vc9JATnYhiXYEOb+Udw9rGAbTbFZGR1hXfhNkF6ReK4NikQ3GDTsPQ3jVXcG0b++UtNGAmDlhGkqzuuy0BC92hbPvffJf189rw9KBC8R7BBvqicQrmTdM6e3LKonFuDWt24fZu2o0Ojs0d4zRIAfjsHiYAJ9jTXwWLEBaiL2UesL0DU4b2cGz9FLF0rdapfLDWwzsWVy9QclHRa8xAKtL9Pnn1sXQvWeOmp2b7NLwShE7xsfOSupC4QWk=
+  bucket: alexa-trimet
+  local-dir: src
+  acl: ''
+  on:
+    repo: davidmerrick/alexa-trimet
