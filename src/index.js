@@ -23,19 +23,17 @@ TriMet.prototype.constructor = TriMet;
 // ----------------------- Override AlexaSkill request and intent handlers -----------------------
 
 TriMet.prototype.eventHandlers.onSessionStarted = function (sessionStartedRequest, session) {
-    console.log("onSessionStarted requestId: " + sessionStartedRequest.requestId
-        + ", sessionId: " + session.sessionId);
+    console.log(`onSessionStarted requestId: ${sessionStartedRequest.requestId}, sessionId: ${session.sessionId)}`;
     // any initialization logic goes here
 };
 
 TriMet.prototype.eventHandlers.onLaunch = function (launchRequest, session, response) {
-    console.log("onLaunch requestId: " + launchRequest.requestId + ", sessionId: " + session.sessionId);
+    console.log(`onLaunch requestId: ${launchRequest.requestId}, sessionId: ${session.sessionId}`);
     handleWelcomeRequest(response);
 };
 
 TriMet.prototype.eventHandlers.onSessionEnded = function (sessionEndedRequest, session) {
-    console.log("onSessionEnded requestId: " + sessionEndedRequest.requestId
-        + ", sessionId: " + session.sessionId);
+    console.log(`onSessionEnded requestId: ${sessionEndedRequest.requestId}, sessionId: ${session.sessionId}`);
     // any cleanup logic goes here
 };
 
@@ -48,12 +46,12 @@ TriMet.prototype.intentHandlers = {
         var stopID = intent.slots.StopID.value;
         TriMetAPIInstance.getNextArrivalForBus(stopID, busID, function(arrival){
             if(!arrival){
-                response.tell("Sorry, I was not able to find information for bus " + busID + " at stop " + stopID);
+                response.tell(`Sorry, I was not able to find information for bus ${busID} at stop ${stopID}`);
                 return;
             }
             var minutesRemaining = arrival.getMinutesUntilArrival();
             var minutePronunciation = SpeechHelper.getMinutePronunciation(minutesRemaining);
-            response.tell(minutePronunciation + " until the next bus " + busID + " at stop " + stopID);
+            response.tell(`${minutePronunciation} until the next bus ${busID} at stop ${stopID}`);
         });
     },
     "GetAllNextArrivalsIntent": function (intent, session, response) {
@@ -83,9 +81,8 @@ function handleWelcomeRequest(response) {
 }
 
 function handleHelpRequest(response) {
+    var speechOutput = "I can give you information on next arrivals and bus schedules for Portland.";
     var repromptText = "Which bus stop would you like information for?";
-    var speechOutput = "I can give you information on next arrivals and bus schedules for Portland."
-        + repromptText;
     response.ask(speechOutput, repromptText);
 }
 

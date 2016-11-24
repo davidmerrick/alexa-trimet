@@ -6,22 +6,22 @@ var SpeechHelper = module.exports = {
         return minutesRemaining + " " + minutePronunciation;
     },
     buildArrivalResponse: function (arrival) {
-        var route = arrival.route;
+        var busID = arrival.route;
         var minutesRemaining = arrival.getMinutesUntilArrival();
         var arrivalType = arrival.getArrivalType();
         if (arrivalType === ArrivalType.MAX_TRAIN) {
-            return arrival.getTrainSign() + " train in " + SpeechHelper.getMinutePronunciation(minutesRemaining);
+            return `${arrival.getTrainSign()} train in ${SpeechHelper.getMinutePronunciation(minutesRemaining)}`;
         } else {
-            return "bus " + route + " in " + SpeechHelper.getMinutePronunciation(minutesRemaining);
+            return `bus ${busID} in ${SpeechHelper.getMinutePronunciation(minutesRemaining)}`;
         }
     },
     buildArrivalsResponse: function (stopID, arrivals) {
-        var speechOutput = "At stop " + stopID + ", next arrivals are: ";
+        var speechOutput = `At stop ${stopID}, next arrivals are: `;
         for (var i = 0; i < arrivals.length - 1; i++) {
-            speechOutput += SpeechHelper.buildArrivalResponse(arrivals[i]) + ", "
+            speechOutput += `${SpeechHelper.buildArrivalResponse(arrivals[i])}, `
         }
         var last = arrivals.length - 1;
-        speechOutput += "and " + SpeechHelper.buildArrivalResponse(arrivals[last]) + ".";
+        speechOutput += `and ${SpeechHelper.buildArrivalResponse(arrivals[last])}.`;
         return speechOutput;
     }
 };
