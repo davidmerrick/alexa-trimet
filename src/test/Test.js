@@ -59,20 +59,22 @@ describe("Speech Helper Test", function(){
         minutesShouldBePlural(0);
     });
 
-    it("Should fail gracefully if invalid stop ID is specified", function(){
+    it("Should fail gracefully if invalid stop ID is specified", function(done){
         var invalidStopID = 1000;
         IntentHelper.getAllNextArrivals(invalidStopID, function(speechOutput){
-            var speechOutputContainsSorry = speechOutput.toLowerCase().indexOf("sorry" != -1);
-            expect(speechOutputContainsSorry);
+            var speechOutputContainsSorry = speechOutput.toLowerCase().indexOf("sorry") != -1;
+            expect(speechOutputContainsSorry).to.equal(true);
+            done();
         });
     });
 
-    it("Should fail gracefully if invalid stop ID and bus ID are specified", function(){
+    it("Should fail gracefully if invalid stop ID and bus ID are specified", function(done){
         var invalidStopID = 1000;
         var invalidBusID = 1000;
         IntentHelper.getSingleNextArrival(invalidStopID, invalidBusID, function(speechOutput){
-            var speechOutputContainsSorry = speechOutput.toLowerCase().indexOf("sorry" != -1);
-            expect(speechOutputContainsSorry);
+            var speechOutputContainsSorry = speechOutput.toLowerCase().indexOf("sorry") != -1;
+            expect(speechOutputContainsSorry).to.equal(true);
+            done();
         });
     });
 });
