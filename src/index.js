@@ -57,6 +57,10 @@ TriMet.prototype.intentHandlers = {
     "GetAllNextArrivalsIntent": function (intent, session, response) {
         var stopID = intent.slots.StopID.value;
         TriMetAPIInstance.getSortedFilteredArrivals(stopID, function(arrivals){
+            if(!arrivals){
+                response.tell(`Sorry, I was not able to find information for stop ${stopID}`);
+                return;
+            }
             var speechOutput = SpeechHelper.buildArrivalsResponse(stopID, arrivals);
             response.tell(speechOutput);
         });
@@ -69,7 +73,7 @@ TriMet.prototype.intentHandlers = {
         response.tell(speechOutput);
     },
     "AMAZON.CancelIntent": function (intent, session, response) {
-        var speechOutput = "Goodbye";
+        var speechOutput = "Okay";
         response.tell(speechOutput);
     }
 };
