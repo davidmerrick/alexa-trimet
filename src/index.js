@@ -75,14 +75,14 @@ TriMet.prototype.intentHandlers = {
 };
 
 function handleWelcomeRequest(response) {
-    var speechOutput = "Welcome to TriMet Arrivals. I can retrieve arrival times for bus and train stops in Portland, Oregon."
     var repromptText = "Which bus stop would you like information for?";
+    var speechOutput = `Welcome to TriMet Arrivals. I can retrieve arrival times for bus and train stops in Portland, Oregon. ${repromptText}`;
     response.ask(speechOutput, repromptText);
 }
 
 function handleHelpRequest(response) {
-    var speechOutput = "I can give you information on next arrivals and bus schedules for Portland.";
     var repromptText = "Which bus stop would you like information for?";
+    var speechOutput = `I can give you information on next arrivals and bus schedules for Portland. ${repromptText}`;
     response.ask(speechOutput, repromptText);
 }
 
