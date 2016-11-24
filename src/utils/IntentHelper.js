@@ -17,15 +17,11 @@ var IntentHelper = module.exports = {
     },
     getAllNextArrivals: function(stopID, callback) {
         TriMetAPIInstance.getSortedFilteredArrivals(stopID, function(err, arrivals) {
-            try {
-                if (err || arrivals == null) {
-                    callback(`Sorry, I was not able to find arrival information for stop ${stopID}`);
-                }
-                var speechOutput = SpeechHelper.buildArrivalsResponse(stopID, arrivals);
-                callback(speechOutput);
-            } catch(err){
+            if (err || arrivals == null) {
                 callback(`Sorry, I was not able to find arrival information for stop ${stopID}`);
             }
+            var speechOutput = SpeechHelper.buildArrivalsResponse(stopID, arrivals);
+            callback(speechOutput);
         });
     }
 };
