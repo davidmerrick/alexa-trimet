@@ -1,3 +1,8 @@
+/**
+ * Note: callback structure uses Node convention of error-first callbacks.
+ * See: http://fredkschott.com/post/2014/03/understanding-error-first-callbacks-in-node-js/
+ */
+
 var request = require('request');
 var Arrival = require('./Arrival');
 
@@ -7,16 +12,20 @@ var TriMetAPI = function(TRIMET_API_KEY){
 };
 
 TriMetAPI.prototype.getNextArrivalForBus = function(stopID, busID, callback){
-    this.getSortedFilteredArrivals(stopID, function(arrivals){
-        if(!arrivals){
-            callback(null);
+    this.getSortedFilteredArrivals(stopID, function(err, arrivals){
+        if(err){
+            callback(err);
+        }
+        try {
+            var arrivalsForStop = arrivals.filter(function (arrival) {
+                return arrival.route == busID;
+            });
+            var arrivalData = arrivalsForStop[0];
+            var arrival = new Arrival(arrivalData);
+            callback(null, arrival);
+        } catch(err){
+            callback(err);
         };
-        var arrivalsForStop = arrivals.filter(function(arrival){
-            return arrival.route == busID;
-        });
-        var arrivalData = arrivalsForStop[0];
-        var arrival = new Arrival(arrivalData);
-        callback(arrival);
     });
 };
 
@@ -36,7 +45,7 @@ TriMetAPI.prototype.getSortedFilteredArrivals = function(stopID, callback){
             var result = JSON.parse(body);
             var arrivalDatas = result.resultSet.arrival;
             if(!arrivalDatas){
-                callback(null);
+                callback(new Error("No arrivals found."));
             }
             var arrivals = arrivalDatas.map(function (arrivalData) {
                 return new Arrival(arrivalData);
@@ -49,20 +58,20 @@ TriMetAPI.prototype.getSortedFilteredArrivals = function(stopID, callback){
                 return minutesRemaining > 0;
             });
 
-            callback(arrivals);
+            callback(null, arrivals);
         } else {
-            callback(null);
+            callback(new Error(`Error in request to TriMet API. Response: ${response.statusCode}`));
         }
     });
 };
 
 TriMetAPI.prototype.getNextArrivalsForTrainStop = function(stopID, callback){
-    this.getSortedFilteredArrivals(stopID, function(arrivals){
-        if(!arrivals){
-            callback(null);
-        };
+    this.getSortedFilteredArrivals(stopID, function(err, arrivals){
+        if(err){
+            callback(err);
+        }
         var arrival = arrivals[0];
-        callback(arrival);
+        callback(null, arrival);
     });
 };
 

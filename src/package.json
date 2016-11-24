@@ -10,7 +10,7 @@
   ],
   "author": "David Merrick",
   "dependencies": {
-    "trimet-api-client": "^1.0.5"
+    "trimet-api-client": "^1.0.6"
   },
   "devDependencies": {
     "chai": "^3.5.0",
