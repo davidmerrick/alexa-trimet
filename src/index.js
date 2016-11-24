@@ -23,7 +23,7 @@ TriMet.prototype.constructor = TriMet;
 // ----------------------- Override AlexaSkill request and intent handlers -----------------------
 
 TriMet.prototype.eventHandlers.onSessionStarted = function (sessionStartedRequest, session) {
-    console.log(`onSessionStarted requestId: ${sessionStartedRequest.requestId}, sessionId: ${session.sessionId)}`;
+    console.log(`onSessionStarted requestId: ${sessionStartedRequest.requestId}, sessionId: ${session.sessionId}`);
     // any initialization logic goes here
 };
 
