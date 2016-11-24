@@ -17,8 +17,8 @@ var IntentHelper = module.exports = {
     },
     getAllNextArrivals: function(stopID, callback) {
         TriMetAPIInstance.getSortedFilteredArrivals(stopID, function (arrivals) {
-            if (!arrivals) {
-                callback(`Sorry, I was not able to find information for stop ${stopID}`);
+            if (!arrivals || arrivals.length === 0) {
+                callback(`Sorry, I was not able to find arrival information for stop ${stopID}`);
             }
             var speechOutput = SpeechHelper.buildArrivalsResponse(stopID, arrivals);
             callback(speechOutput);
