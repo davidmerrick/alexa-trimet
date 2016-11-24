@@ -1,5 +1,6 @@
 /**
  * App ID for the skill
+ * Foo test comment
  */
 var APP_ID = process.env.APP_ID;
 
