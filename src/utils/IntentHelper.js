@@ -8,12 +8,16 @@ var IntentHelper = module.exports = {
     getSingleNextArrival: function(stopID, busID, callback){
         try {
             TriMetAPIInstance.getNextArrivalForBus(stopID, busID, function (arrival) {
-                if (!arrival) {
+                try {
+                    if (!arrival) {
+                        callback(`Sorry, I was not able to find information for bus ${busID} at stop ${stopID}`);
+                    }
+                    var minutesRemaining = arrival.getMinutesUntilArrival();
+                    var minutePronunciation = SpeechHelper.getMinutePronunciation(minutesRemaining);
+                    callback(`${minutePronunciation} until the next bus ${busID} at stop ${stopID}`);
+                } catch(error){
                     callback(`Sorry, I was not able to find information for bus ${busID} at stop ${stopID}`);
                 }
-                var minutesRemaining = arrival.getMinutesUntilArrival();
-                var minutePronunciation = SpeechHelper.getMinutePronunciation(minutesRemaining);
-                callback(`${minutePronunciation} until the next bus ${busID} at stop ${stopID}`);
             });
         } catch(error){
             callback(`Sorry, I was not able to find information for bus ${busID} at stop ${stopID}`);
@@ -22,11 +26,15 @@ var IntentHelper = module.exports = {
     getAllNextArrivals: function(stopID, callback) {
         try {
             TriMetAPIInstance.getSortedFilteredArrivals(stopID, function (arrivals) {
-                if (!arrivals || arrivals.length === 0) {
-                    callback(`Sorry, I was not able to find arrival information for stop ${stopID}`);
+                try {
+                    if (!arrivals || arrivals.length === 0) {
+                        callback(`Sorry, I was not able to find arrival information for stop ${stopID}`);
+                    }
+                    var speechOutput = SpeechHelper.buildArrivalsResponse(stopID, arrivals);
+                    callback(speechOutput);
+                } catch(error){
+                    callback(`Sorry, I was not able to find information for bus ${busID} at stop ${stopID}`);
                 }
-                var speechOutput = SpeechHelper.buildArrivalsResponse(stopID, arrivals);
-                callback(speechOutput);
             });
         } catch(error){
             callback(`Sorry, I was not able to find arrival information for stop ${stopID}`);
