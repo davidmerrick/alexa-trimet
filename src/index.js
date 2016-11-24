@@ -7,10 +7,7 @@ var APP_ID = process.env.APP_ID;
  * The AlexaSkill prototype and helper functions
  */
 var AlexaSkill = require('./AlexaSkill');
-var TriMetAPI = require('trimet-api-client');
-var ArrivalType = require('trimet-api-client/ArrivalType');
-var TriMetAPIInstance = new TriMetAPI(process.env.TRIMET_API_KEY);
-var SpeechHelper = require('./utils/SpeechHelper');
+var IntentHelper = require('./utils/IntentHelper');
 
 var TriMet = function () {
     AlexaSkill.call(this, APP_ID);
@@ -38,30 +35,19 @@ TriMet.prototype.eventHandlers.onSessionEnded = function (sessionEndedRequest, s
 };
 
 TriMet.prototype.intentHandlers = {
-    "LaunchIntent": function (intent, session, response) {
+    "LaunchIntent": function(intent, session, response) {
         handleWelcomeRequest(response);
     },
-    "GetSingleNextArrivalIntent": function (intent, session, response) {
+    "GetSingleNextArrivalIntent": function(intent, session, response) {
         var busID = intent.slots.BusID.value;
         var stopID = intent.slots.StopID.value;
-        TriMetAPIInstance.getNextArrivalForBus(stopID, busID, function(arrival){
-            if(!arrival){
-                response.tell(`Sorry, I was not able to find information for bus ${busID} at stop ${stopID}`);
-                return;
-            }
-            var minutesRemaining = arrival.getMinutesUntilArrival();
-            var minutePronunciation = SpeechHelper.getMinutePronunciation(minutesRemaining);
-            response.tell(`${minutePronunciation} until the next bus ${busID} at stop ${stopID}`);
+        var speechOutput = IntentHelper.getSingleNextArrival(busID, stopID, function(speechOutput) {
+            response.tell(speechOutput);
         });
     },
-    "GetAllNextArrivalsIntent": function (intent, session, response) {
+    "GetAllNextArrivalsIntent": function(intent, session, response) {
         var stopID = intent.slots.StopID.value;
-        TriMetAPIInstance.getSortedFilteredArrivals(stopID, function(arrivals){
-            if(!arrivals){
-                response.tell(`Sorry, I was not able to find information for stop ${stopID}`);
-                return;
-            }
-            var speechOutput = SpeechHelper.buildArrivalsResponse(stopID, arrivals);
+        var speechOutput = IntentHelper.getAllNextArrivals(stopID, function(speechOutput) {
             response.tell(speechOutput);
         });
     },

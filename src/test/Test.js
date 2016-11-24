@@ -2,6 +2,7 @@ var expect = require('chai').expect;
 var rewire = require('rewire');
 var SpeechHelper = require('../utils/SpeechHelper');
 var Arrival = require('trimet-api-client/Arrival');
+var IntentHelper = require('../utils/IntentHelper');
 
 function minutesShouldBePlural(minutesRemaining){
     var speechOutput = SpeechHelper.getMinutePronunciation(minutesRemaining);
@@ -56,5 +57,22 @@ describe("Speech Helper Test", function(){
 
     it("Should correctly pronounce minute values < 1", function(){
         minutesShouldBePlural(0);
+    });
+
+    it("Should fail gracefully if invalid stop ID is specified", function(){
+        var invalidStopID = 1000;
+        IntentHelper.getAllNextArrivals(invalidStopID, function(speechOutput){
+            var speechOutputContainsSorry = speechOutput.toLowerCase().indexOf("sorry" != -1);
+            expect(speechOutputContainsSorry);
+        });
+    });
+
+    it("Should fail gracefully if invalid stop ID and bus ID are specified", function(){
+        var invalidStopID = 1000;
+        var invalidBusID = 1000;
+        IntentHelper.getSingleNextArrival(invalidStopID, invalidBusID, function(speechOutput){
+            var speechOutputContainsSorry = speechOutput.toLowerCase().indexOf("sorry" != -1);
+            expect(speechOutputContainsSorry);
+        });
     });
 });
