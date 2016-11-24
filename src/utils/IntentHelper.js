@@ -33,7 +33,7 @@ var IntentHelper = module.exports = {
                     var speechOutput = SpeechHelper.buildArrivalsResponse(stopID, arrivals);
                     callback(speechOutput);
                 } catch(error){
-                    callback(`Sorry, I was not able to find information for bus ${busID} at stop ${stopID}`);
+                    callback(`Sorry, I was not able to find arrival information for stop ${stopID}`);
                 }
             });
         } catch(error){
