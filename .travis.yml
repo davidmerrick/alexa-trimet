@@ -1,6 +1,6 @@
 language: node_js
 script: cd src; npm test; cd -
-before_deploy: mkdir build; zip -r build/build.zip src/*
+before_deploy: mkdir build; cd src; zip -r ../build/build.zip *; cd -
 deploy:
   provider: s3
   access_key_id: AKIAI4ADBAIGJ5VGTW7Q
