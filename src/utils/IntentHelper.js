@@ -9,6 +9,7 @@ var IntentHelper = module.exports = {
         TriMetAPIInstance.getNextArrivalForBus(stopID, busID, function(err, arrival) {
             if(err) {
                 callback(`Sorry, I was not able to find information for bus ${busID} at stop ${stopID}`);
+                return;
             }
             var minutesRemaining = arrival.getMinutesUntilArrival();
             var minutePronunciation = SpeechHelper.getMinutePronunciation(minutesRemaining);
@@ -19,6 +20,7 @@ var IntentHelper = module.exports = {
         TriMetAPIInstance.getSortedFilteredArrivals(stopID, function(err, arrivals) {
             if (err || arrivals == null) {
                 callback(`Sorry, I was not able to find arrival information for stop ${stopID}`);
+                return;
             }
             var speechOutput = SpeechHelper.buildArrivalsResponse(stopID, arrivals);
             callback(speechOutput);
