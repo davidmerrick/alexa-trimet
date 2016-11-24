@@ -32,6 +32,9 @@ TriMetAPI.prototype.getSortedFilteredArrivals = function(stopID, callback){
         if(!error && response.statusCode == 200) {
             var result = JSON.parse(body);
             var arrivalDatas = result.resultSet.arrival;
+            if(!arrivalDatas){
+                callback(null);
+            }
             var arrivals = arrivalDatas.map(function (arrivalData) {
                 return new Arrival(arrivalData);
             });
