@@ -15,6 +15,7 @@ TriMetAPI.prototype.getNextArrivalForBus = function(stopID, busID, callback){
     this.getSortedFilteredArrivals(stopID, function(err, arrivals){
         if(err){
             callback(err);
+            return;
         }
         try {
             var arrivalsForStop = arrivals.filter(function (arrival) {
@@ -46,6 +47,7 @@ TriMetAPI.prototype.getSortedFilteredArrivals = function(stopID, callback){
             var arrivalDatas = result.resultSet.arrival;
             if(arrivalDatas == null || arrivalDatas.length === 0){
                 callback(new Error("No arrivals found."));
+                return;
             }
             var arrivals = arrivalDatas.map(function(arrivalData) {
                 return new Arrival(arrivalData);
@@ -69,6 +71,7 @@ TriMetAPI.prototype.getNextArrivalsForTrainStop = function(stopID, callback){
     this.getSortedFilteredArrivals(stopID, function(err, arrivals){
         if(err){
             callback(err);
+            return;
         }
         var arrival = arrivals[0];
         callback(null, arrival);
