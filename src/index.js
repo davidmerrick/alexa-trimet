@@ -1,75 +1,27 @@
-import alexa from 'alexa-app'
-import IntentHelper from './utils/IntentHelper'
+import alexa from "alexa-app";
 
-var TriMet = function () {
-    AlexaSkill.call(this, APP_ID);
-};
+var app = new alexa.app("TriMet");
+const SKILL_NAME = "TriMet Arrivals";
 
-// Extend AlexaSkill
-TriMet.prototype = Object.create(AlexaSkill.prototype);
-TriMet.prototype.constructor = TriMet;
+app.launch((request, response) => {
+    let speechOutput = `Welcome to ${SKILL_NAME}. I can retrieve arrival times for bus and train stops in Portland, Oregon.`;
+    response.say(speechOutput);
+});
 
-// ----------------------- Override AlexaSkill request and intent handlers -----------------------
+app.intent("AMAZON.HelpIntent",{}, (request, response) => {
+    let speechOutput = "You can ask Donald Trump anything. For example, ask Donald Trump about his tax returns";
+    response.say(speechOutput);
+});
 
-TriMet.prototype.eventHandlers.onSessionStarted = function (sessionStartedRequest, session) {
-    console.log(`onSessionStarted requestId: ${sessionStartedRequest.requestId}, sessionId: ${session.sessionId}`);
-    // any initialization logic goes here
-};
+app.intent("AMAZON.StopIntent",{}, (request, response) => {
+    let speechOutput = "Goodbye";
+    response.say(speechOutput);
+});
 
-TriMet.prototype.eventHandlers.onLaunch = function (launchRequest, session, response) {
-    console.log(`onLaunch requestId: ${launchRequest.requestId}, sessionId: ${session.sessionId}`);
-    handleWelcomeRequest(response);
-};
+app.intent("AMAZON.CancelIntent",{}, (request, response) => {
+    let speechOutput = "Okay";
+    response.say(speechOutput);
+});
 
-TriMet.prototype.eventHandlers.onSessionEnded = function (sessionEndedRequest, session) {
-    console.log(`onSessionEnded requestId: ${sessionEndedRequest.requestId}, sessionId: ${session.sessionId}`);
-    // any cleanup logic goes here
-};
-
-TriMet.prototype.intentHandlers = {
-    "LaunchIntent": function(intent, session, response) {
-        handleWelcomeRequest(response);
-    },
-    "GetSingleNextArrivalIntent": function(intent, session, response) {
-        var busID = intent.slots.BusID.value;
-        var stopID = intent.slots.StopID.value;
-        var speechOutput = IntentHelper.getSingleNextArrival(busID, stopID, function(speechOutput) {
-            response.tell(speechOutput);
-        });
-    },
-    "GetAllNextArrivalsIntent": function(intent, session, response) {
-        var stopID = intent.slots.StopID.value;
-        var speechOutput = IntentHelper.getAllNextArrivals(stopID, function(speechOutput) {
-            response.tell(speechOutput);
-        });
-    },
-    "AMAZON.HelpIntent": function (intent, session, response) {
-        handleHelpRequest(response);
-    },
-    "AMAZON.StopIntent": function (intent, session, response) {
-        var speechOutput = "Goodbye";
-        response.tell(speechOutput);
-    },
-    "AMAZON.CancelIntent": function (intent, session, response) {
-        var speechOutput = "Okay";
-        response.tell(speechOutput);
-    }
-};
-
-function handleWelcomeRequest(response) {
-    var repromptText = "Which bus stop would you like information for?";
-    var speechOutput = `Welcome to TriMet Arrivals. I can retrieve arrival times for bus and train stops in Portland, Oregon. ${repromptText}`;
-    response.ask(speechOutput, repromptText);
-}
-
-function handleHelpRequest(response) {
-    var repromptText = "Which bus stop would you like information for?";
-    var speechOutput = `I can give you information on next arrivals and bus schedules for Portland. ${repromptText}`;
-    response.ask(speechOutput, repromptText);
-}
-
-// Create the handler that responds to the Alexa Request.
-exports.handler = function (event, context) {
-    var triMet = new TriMet();
-    triMet.execute(event, context);
-};
+// connect the alexa-app to AWS Lambda
+exports.handler = app.lambda();
