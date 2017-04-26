@@ -1,13 +1,5 @@
-/**
- * App ID for the skill
- */
-var APP_ID = process.env.APP_ID;
-
-/**
- * The AlexaSkill prototype and helper functions
- */
-var AlexaSkill = require('./AlexaSkill');
-var IntentHelper = require('./utils/IntentHelper');
+import alexa from 'alexa-app'
+import IntentHelper from './utils/IntentHelper'
 
 var TriMet = function () {
     AlexaSkill.call(this, APP_ID);
