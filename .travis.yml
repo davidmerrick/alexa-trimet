@@ -1,0 +1,10 @@
+language: node_js
+node_js:
+  - "7.9.0"
+before_script:
+  - mkdir conf
+  - cp ci/lambda-config.js conf
+  - npm install -g gulp
+  - npm install
+script: gulp deploy
+sudo: false
