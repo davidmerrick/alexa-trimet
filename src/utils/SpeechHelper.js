@@ -1,11 +1,13 @@
-var ArrivalType = require('trimet-api-client/ArrivalType');
+import {ArrivalType} from 'trimet-api-client'
 
-var SpeechHelper = module.exports = {
-    getMinutePronunciation: function (minutesRemaining) {
+class SpeechHelper {
+
+    static getMinutePronunciation(minutesRemaining) {
         var minutePronunciation = minutesRemaining == 1 ? "minute" : "minutes";
         return minutesRemaining + " " + minutePronunciation;
-    },
-    buildArrivalResponse: function (arrival) {
+    }
+
+    static buildArrivalResponse(arrival) {
         var busID = arrival.route;
         var minutesRemaining = arrival.getMinutesUntilArrival();
         var arrivalType = arrival.getArrivalType();
@@ -14,8 +16,9 @@ var SpeechHelper = module.exports = {
         } else {
             return `bus ${busID} in ${SpeechHelper.getMinutePronunciation(minutesRemaining)}`;
         }
-    },
-    buildArrivalsResponse: function (stopID, arrivals) {
+    }
+
+    static buildArrivalsResponse(stopID, arrivals) {
         var speechOutput = `At stop ${stopID}, next arrivals are: `;
         for (var i = 0; i < arrivals.length - 1; i++) {
             speechOutput += `${SpeechHelper.buildArrivalResponse(arrivals[i])}, `
@@ -24,7 +27,7 @@ var SpeechHelper = module.exports = {
         speechOutput += `and ${SpeechHelper.buildArrivalResponse(arrivals[last])}.`;
         return speechOutput;
     }
-};
+}
 
-module.exports = SpeechHelper;
+export default SpeechHelper
 
