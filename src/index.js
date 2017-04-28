@@ -1,5 +1,6 @@
 import alexa from "alexa-app";
 import TriMetAPI from 'trimet-api-client'
+import SpeechHelper from './utils/SpeechHelper'
 
 const app = new alexa.app("TriMet");
 const SKILL_NAME = "TriMet Arrivals";
@@ -41,8 +42,9 @@ app.intent(
     (request, response) => {
         let stopId = request.slot("StopID");
         return TriMetAPIInstance.getSortedFilteredArrivals(stopId)
-            .then(result => {
-                response.say("Success!");
+            .then(arrivals => {
+                let responseText = SpeechHelper.buildArrivalsResponse(stopId, arrivals);
+                response.say(responseText);
             })
             .catch(err => {
                 response.say(`Sorry, an error occurred retrieving arrival times for stop ${stopId}.`);

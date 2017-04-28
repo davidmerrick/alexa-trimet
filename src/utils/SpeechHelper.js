@@ -3,28 +3,28 @@ import {ArrivalType} from 'trimet-api-client'
 class SpeechHelper {
 
     static getMinutePronunciation(minutesRemaining) {
-        var minutePronunciation = minutesRemaining == 1 ? "minute" : "minutes";
-        return minutesRemaining + " " + minutePronunciation;
+        let pronunciation = minutesRemaining === 1 ? "minute" : "minutes";
+        return minutesRemaining + " " + pronunciation;
     }
 
     static buildArrivalResponse(arrival) {
-        var busID = arrival.route;
-        var minutesRemaining = arrival.getMinutesUntilArrival();
-        var arrivalType = arrival.getArrivalType();
-        if (arrivalType === ArrivalType.MAX_TRAIN) {
-            return `${arrival.getTrainSign()} train in ${SpeechHelper.getMinutePronunciation(minutesRemaining)}`;
+        let busId = arrival.route;
+        let minutesRemaining = arrival.getMinutesUntilArrival();
+        let arrivalType = arrival.getArrivalType();
+        if(arrivalType === ArrivalType.MAX_TRAIN) {
+            return `${arrival.getTrainSign()} train in ${this.getMinutePronunciation(minutesRemaining)}`;
         } else {
-            return `bus ${busID} in ${SpeechHelper.getMinutePronunciation(minutesRemaining)}`;
+            return `bus ${busId} in ${this.getMinutePronunciation(minutesRemaining)}`;
         }
     }
 
-    static buildArrivalsResponse(stopID, arrivals) {
-        var speechOutput = `At stop ${stopID}, next arrivals are: `;
+    static buildArrivalsResponse(stopId, arrivals) {
+        var speechOutput = `At stop ${stopId}, next arrivals are: `;
         for (var i = 0; i < arrivals.length - 1; i++) {
-            speechOutput += `${SpeechHelper.buildArrivalResponse(arrivals[i])}, `
+            speechOutput += `${this.buildArrivalResponse(arrivals[i])}, `
         }
-        var last = arrivals.length - 1;
-        speechOutput += `and ${SpeechHelper.buildArrivalResponse(arrivals[last])}.`;
+        let last = arrivals.length - 1;
+        speechOutput += `and ${this.buildArrivalResponse(arrivals[last])}.`;
         return speechOutput;
     }
 }
