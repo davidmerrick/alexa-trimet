@@ -11,7 +11,7 @@
   "author": "David Merrick",
   "dependencies": {
     "alexa-app": "^4.0.0",
-    "trimet-api-client": "^1.0.8"
+    "trimet-api-client": "^2.0.1"
   },
   "devDependencies": {
     "babel-preset-es2015": "^6.24.1",
