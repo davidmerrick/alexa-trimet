@@ -1,10 +1,10 @@
-var gulp = require('gulp');
-var zip = require('gulp-zip');
-var del = require('del');
-var install = require('gulp-install');
-var runSequence = require('run-sequence');
-var awsLambda = require("node-aws-lambda");
-const babel = require('gulp-babel');
+import gulp from 'gulp'
+import zip from 'gulp-zip'
+import del from 'del'
+import install from 'gulp-install'
+import runSequence from 'run-sequence'
+import awsLambda from "node-aws-lambda"
+import babel from 'gulp-babel'
 
 gulp.task('clean', function() {
     return del(['./dist', './dist.zip']);
