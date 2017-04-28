@@ -1,7 +1,6 @@
-var expect = require('chai').expect;
-var rewire = require('rewire');
-var SpeechHelper = require('../src/utils/SpeechHelper');
-var Arrival = require('trimet-api-client/Arrival');
+import {expect} from 'chai';
+import SpeechHelper from '../src/utils/SpeechHelper'
+import {Arrival, TriMetAPI} from 'trimet-api-client'
 
 function minutesShouldBePlural(minutesRemaining){
     var speechOutput = SpeechHelper.getMinutePronunciation(minutesRemaining);
@@ -13,7 +12,9 @@ function minutesShouldNotBePlural(minutesRemaining){
     expect(speechOutput).to.equal(minutesRemaining + " minute");
 }
 
-describe("Speech Helper Test", function(){
+const TriMetAPIInstance = new TriMetAPI(process.env.TRIMET_API_KEY);
+
+describe("Speech Helper Test", () => {
     it("Should output correctly for a single arrival.", function(){
         var busID = 20;
         var stopID = 749;
@@ -56,5 +57,18 @@ describe("Speech Helper Test", function(){
 
     it("Should correctly pronounce minute values < 1", function(){
         minutesShouldBePlural(0);
+    });
+
+    it("Test get single arrival", done => {
+        let stopId = 755;
+
+        return TriMetAPIInstance.getSortedFilteredArrivals(stopId)
+            .then(arrivals => {
+                let responseText = SpeechHelper.buildArrivalsResponse(stopId, arrivals);
+                done();
+            })
+            .catch(err => {
+                throw new Error(err);
+            });
     });
 });
