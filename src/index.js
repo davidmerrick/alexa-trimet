@@ -23,8 +23,11 @@ app.intent(
         let stopId = request.slot("StopID");
         let busId = request.slot("BusID");
         return TriMetAPIInstance.getNextArrivalForBus(stopId, busId)
-            .then(result => {
-                response.say("Success!");
+            .then(arrival => {
+                let minutesRemaining = arrival.getMinutesUntilArrival();
+                let minutePronunciation = SpeechHelper.getMinutePronunciation(minutesRemaining);
+                let responseText = `${minutePronunciation} remaining until bus ${busId} arrives at stop ${stopId}.`;
+                response.say(responseText);
             })
             .catch(err => {
                 response.say(`Sorry, an error occurred retrieving arrival times for bus ${busId} at stop ${stopId}.`);

@@ -1,6 +1,6 @@
 import {expect} from 'chai';
 import SpeechHelper from '../src/utils/SpeechHelper'
-import {Arrival, TriMetAPI} from 'trimet-api-client'
+import TriMetAPI from 'trimet-api-client'
 
 function minutesShouldBePlural(minutesRemaining){
     var speechOutput = SpeechHelper.getMinutePronunciation(minutesRemaining);
@@ -42,7 +42,7 @@ describe("Speech Helper Test", () => {
             return minutesRemaining;
         };
 
-        var speechOutput = SpeechHelper.buildArrivalResponse(arrival);
+        var speechOutput = SpeechHelper.buildSingleArrivalResponse(arrival);
         var expectedOutput = "bus " + busID + " in " + minutesRemaining + " minutes";
         expect(speechOutput).to.equal(expectedOutput);
     });
@@ -59,12 +59,28 @@ describe("Speech Helper Test", () => {
         minutesShouldBePlural(0);
     });
 
-    it("Test get single arrival", done => {
+    it("Test get multiple arrivals", done => {
         let stopId = 755;
 
         return TriMetAPIInstance.getSortedFilteredArrivals(stopId)
             .then(arrivals => {
                 let responseText = SpeechHelper.buildArrivalsResponse(stopId, arrivals);
+                done();
+            })
+            .catch(err => {
+                throw new Error(err);
+            });
+    });
+
+    it("Test get single arrival", done => {
+        let stopId = 755;
+        let busId = 20;
+
+        return TriMetAPIInstance.getNextArrivalForBus(stopId, busId)
+            .then(arrival => {
+                let minutesRemaining = arrival.getMinutesUntilArrival();
+                let minutePronunciation = SpeechHelper.getMinutePronunciation(minutesRemaining);
+                let responseText = `${minutePronunciation} remaining until bus ${busId} arrives at stop ${stopId}.`;
                 done();
             })
             .catch(err => {

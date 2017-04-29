@@ -1,4 +1,4 @@
-import {ArrivalType} from 'trimet-api-client'
+import ArrivalType from 'trimet-api-client/dist/ArrivalType'
 
 class SpeechHelper {
 
