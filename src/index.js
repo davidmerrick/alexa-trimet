@@ -1,75 +1,68 @@
-import alexa from "alexa-app";
+'use strict';
+
+import Alexa from 'alexa-sdk'
 import TriMetAPI from 'trimet-api-client'
 import SpeechHelper from './utils/SpeechHelper'
 
-const app = new alexa.app("TriMet");
-const SKILL_NAME = "TriMet Arrivals";
+const INVOCATION_NAME = process.env.APP_NAME || "TriMet Arrivals";
+const APP_ID = process.env.APP_ID;
 const TriMetAPIInstance = new TriMetAPI(process.env.TRIMET_API_KEY);
 
-app.launch((request, response) => {
-    let speechOutput = `Welcome to ${SKILL_NAME}. I can retrieve arrival times for bus and train stops in Portland, Oregon.`;
-    response.say(speechOutput);
-});
-
-app.intent(
-    "GetSingleNextArrivalIntent",
-    {
-        "slots": {
-            "StopID": "AMAZON.NUMBER",
-            "BusID": "AMAZON.NUMBER"
-        }
+// Note: these functions can't be ES6 arrow functions; "this" ends up undefined if you do that.
+const handlers = {
+    'LaunchRequest': function(){
+        let speechOutput = `Welcome to ${INVOCATION_NAME}. I can retrieve arrival times for bus and train stops in Portland, Oregon.`;
+        this.emit(':tell', speechOutput);
     },
-    (request, response) => {
-        let stopId = request.slot("StopID");
-        let busId = request.slot("BusID");
-        return TriMetAPIInstance.getNextArrivalForBus(stopId, busId)
+    'AMAZON.HelpIntent': function(){
+        let speechOutput = `Welcome to ${INVOCATION_NAME}. I can retrieve arrival times for bus and train stops in Portland, Oregon.`;
+        this.emit(':tell', speechOutput);
+    },
+    'AMAZON.StopIntent': function(){
+        let speechOutput = "Goodbye";
+        this.emit(':tell', speechOutput);
+    },
+    'AMAZON.CancelIntent': function(){
+        let speechOutput = "Okay";
+        this.emit(':tell', speechOutput);
+    },
+    'GetSingleNextArrivalIntent': function(){
+        let slots = this.event.request.intent.slots;
+        let stopId = slots.StopID;
+        let busId = slots.BusID;
+        TriMetAPIInstance.getNextArrivalForBus(stopId, busId)
             .then(arrival => {
                 let minutesRemaining = arrival.getMinutesUntilArrival();
                 let minutePronunciation = SpeechHelper.getMinutePronunciation(minutesRemaining);
                 let responseText = `${minutePronunciation} remaining until bus ${busId} arrives at stop ${stopId}.`;
-                response.say(responseText);
+                this.emit(':tell', responseText);
             })
             .catch(err => {
-                response.say(`Sorry, an error occurred retrieving arrival times for bus ${busId} at stop ${stopId}.`);
+                console.error(err);
+                this.emit(':tell', `Sorry, an error occurred retrieving arrival times for bus ${busId} at stop ${stopId}.`);
             });
-    }
-);
-
-app.intent(
-    "GetAllNextArrivalsIntent",
-    {
-        "slots": {
-            "StopID": "AMAZON.NUMBER"
-        }
     },
-    (request, response) => {
-        let stopId = request.slot("StopID");
-        return TriMetAPIInstance.getSortedFilteredArrivals(stopId)
+    'GetAllNextArrivalsIntent': function(){
+        let slots = this.event.request.intent.slots;
+        let stopId = slots.StopID;
+        TriMetAPIInstance.getSortedFilteredArrivals(stopId)
             .then(arrivals => {
                 let responseText = SpeechHelper.buildArrivalsResponse(stopId, arrivals);
-                response.say(responseText);
+                this.emit(':tell', responseText);
             })
             .catch(err => {
-                response.say(`Sorry, an error occurred retrieving arrival times for stop ${stopId}.`);
+                console.error(err);
+                this.emit(':tell', `Sorry, an error occurred retrieving arrival times for stop ${stopId}.`);
             });
     }
-);
+};
 
-
-app.intent("AMAZON.HelpIntent",{}, (request, response) => {
-    let speechOutput = "You can ask Donald Trump anything. For example, ask Donald Trump about his tax returns";
-    response.say(speechOutput);
-});
-
-app.intent("AMAZON.StopIntent",{}, (request, response) => {
-    let speechOutput = "Goodbye";
-    response.say(speechOutput);
-});
-
-app.intent("AMAZON.CancelIntent",{}, (request, response) => {
-    let speechOutput = "Okay";
-    response.say(speechOutput);
-});
-
-// connect the alexa-app to AWS Lambda
-exports.handler = app.lambda();
+exports.handler = (event, context, callback) => {
+    let alexa = Alexa.handler(event, context);
+    // Only set appId if not debugging
+    if ('undefined' === typeof process.env.DEBUG) {
+        alexa.appId = APP_ID;
+    }
+    alexa.registerHandlers(handlers);
+    alexa.execute();
+};

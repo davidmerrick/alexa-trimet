@@ -4,10 +4,11 @@
   "description": "Alexa skill for looking up TriMet arrivals at bus stops.",
   "author": "David Merrick",
   "dependencies": {
-    "alexa-app": "^4.0.0",
+    "alexa-sdk": "^1.0.9",
     "trimet-api-client": "^2.0.4"
   },
   "devDependencies": {
+    "alexa-skill-test": "^1.1.1",
     "babel-preset-es2015": "^6.24.1",
     "chai": "^3.5.0",
     "del": "^2.2.2",
