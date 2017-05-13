@@ -6,7 +6,7 @@ import SpeechHelper from './utils/SpeechHelper'
 
 const INVOCATION_NAME = process.env.INVOCATION_NAME || "Portland Bus";
 const APP_ID = process.env.APP_ID;
-const TriMetAPIInstance = new TriMetAPI(process.env.TRIMET_API_KEY);
+const triMetAPIInstance = new TriMetAPI(process.env.TRIMET_API_KEY);
 
 // Note: these functions can't be ES6 arrow functions; "this" ends up undefined if you do that.
 const handlers = {
@@ -30,30 +30,12 @@ const handlers = {
         let slots = this.event.request.intent.slots;
         let stopId = slots.StopID.value;
         let busId = slots.BusID.value;
-        TriMetAPIInstance.getNextArrivalForBus(stopId, busId)
-            .then(arrival => {
-                let minutesRemaining = arrival.getMinutesUntilArrival();
-                let minutePronunciation = SpeechHelper.getMinutePronunciation(minutesRemaining);
-                let responseText = `${minutePronunciation} remaining until bus ${busId} arrives at stop ${stopId}.`;
-                this.emit(':tell', responseText);
-            })
-            .catch(err => {
-                console.error(err);
-                this.emit(':tell', `Sorry, an error occurred retrieving arrival times for bus ${busId} at stop ${stopId}: ${err}.`);
-            });
+        SpeechHelper.singleNextArrivalResponse(triMetAPIInstance, stopId, busId);
     },
     'GetAllNextArrivalsIntent': function(){
         let slots = this.event.request.intent.slots;
         let stopId = slots.StopID.value;
-        TriMetAPIInstance.getSortedFilteredArrivals(stopId)
-            .then(arrivals => {
-                let responseText = SpeechHelper.buildArrivalsResponse(stopId, arrivals);
-                this.emit(':tell', responseText);
-            })
-            .catch(err => {
-                console.error(err);
-                this.emit(':tell', `Sorry, an error occurred retrieving arrival times for stop ${stopId}: ${err}.`);
-            });
+        SpeechHelper.allNextArrivalsResponse(triMetAPIInstance, stopId)
     }
 };
 

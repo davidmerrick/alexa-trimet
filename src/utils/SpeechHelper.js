@@ -27,6 +27,36 @@ class SpeechHelper {
         speechOutput += `and ${this.buildArrivalResponse(arrivals[last])}.`;
         return speechOutput;
     }
+
+    static singleNextArrivalResponse(triMetAPIInstance, stopId, busId){
+        triMetAPIInstance.getNextArrivalForBus(stopId, busId)
+            .then(arrival => {
+                let minutesRemaining = arrival.getMinutesUntilArrival();
+                let minutePronunciation = SpeechHelper.getMinutePronunciation(minutesRemaining);
+                let responseText = `${minutePronunciation} remaining until bus ${busId} arrives at stop ${stopId}.`;
+                this.emit(':tell', responseText);
+                return;
+            })
+            .catch(err => {
+                console.error(err);
+                this.emit(':tell', `Sorry, an error occurred retrieving arrival times for bus ${busId} at stop ${stopId}.`);
+                return;
+            });
+    }
+
+    static allNextArrivalsResponse(triMetAPIInstance, stopId){
+        triMetAPIInstance.getSortedFilteredArrivals(stopId)
+            .then(arrivals => {
+                let responseText = SpeechHelper.buildArrivalsResponse(stopId, arrivals);
+                this.emit(':tell', responseText);
+                return;
+            })
+            .catch(err => {
+                console.error(err);
+                this.emit(':tell', `Sorry, an error occurred retrieving arrival times for stop ${stopId}.`);
+                return;
+            });
+    }
 }
 
 export default SpeechHelper
