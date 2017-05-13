@@ -4,7 +4,7 @@ import Alexa from 'alexa-sdk'
 import TriMetAPI from 'trimet-api-client'
 import SpeechHelper from './utils/SpeechHelper'
 
-const INVOCATION_NAME = process.env.APP_NAME || "TriMet Arrivals";
+const INVOCATION_NAME = process.env.INVOCATION_NAME || "Portland Bus";
 const APP_ID = process.env.APP_ID;
 const TriMetAPIInstance = new TriMetAPI(process.env.TRIMET_API_KEY);
 
@@ -28,8 +28,8 @@ const handlers = {
     },
     'GetSingleNextArrivalIntent': function(){
         let slots = this.event.request.intent.slots;
-        let stopId = slots.StopID;
-        let busId = slots.BusID;
+        let stopId = slots.StopID.value;
+        let busId = slots.BusID.value;
         TriMetAPIInstance.getNextArrivalForBus(stopId, busId)
             .then(arrival => {
                 let minutesRemaining = arrival.getMinutesUntilArrival();
@@ -39,12 +39,12 @@ const handlers = {
             })
             .catch(err => {
                 console.error(err);
-                this.emit(':tell', `Sorry, an error occurred retrieving arrival times for bus ${busId} at stop ${stopId}.`);
+                this.emit(':tell', `Sorry, an error occurred retrieving arrival times for bus ${busId} at stop ${stopId}: ${err}.`);
             });
     },
     'GetAllNextArrivalsIntent': function(){
         let slots = this.event.request.intent.slots;
-        let stopId = slots.StopID;
+        let stopId = slots.StopID.value;
         TriMetAPIInstance.getSortedFilteredArrivals(stopId)
             .then(arrivals => {
                 let responseText = SpeechHelper.buildArrivalsResponse(stopId, arrivals);
@@ -52,7 +52,7 @@ const handlers = {
             })
             .catch(err => {
                 console.error(err);
-                this.emit(':tell', `Sorry, an error occurred retrieving arrival times for stop ${stopId}.`);
+                this.emit(':tell', `Sorry, an error occurred retrieving arrival times for stop ${stopId}: ${err}.`);
             });
     }
 };
