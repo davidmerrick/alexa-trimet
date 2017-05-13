@@ -58,21 +58,4 @@ describe("Speech Helper Test", () => {
     it("Should correctly pronounce minute values < 1", () => {
         minutesShouldBePlural(0);
     });
-
-    // Todo: mock out the trimet API client response
-    it("Should retrieve stops", done => {
-        let stopId = 755;
-        let busId = 20;
-
-        triMetAPIInstance.getNextArrivalForBus(stopId, busId)
-            .then(arrival => {
-                let minutesRemaining = arrival.getMinutesUntilArrival();
-                let minutePronunciation = SpeechHelper.getMinutePronunciation(minutesRemaining);
-                let responseText = `${minutePronunciation} remaining until bus ${busId} arrives at stop ${stopId}.`;
-                done();
-            })
-            .catch(err => {
-                throw new Error(err);
-            });
-    })
 });
