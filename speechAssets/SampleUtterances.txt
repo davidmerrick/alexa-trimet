@@ -14,4 +14,5 @@ GetAllNextArrivalsIntent get stop {StopID} arrivals
 GetAllNextArrivalsIntent arrivals at stop {StopID}
 GetAllNextArrivalsIntent about stop {StopID} arrivals
 GetAllNextArrivalsIntent about stop {StopID}
+GetAllNextArrivalsIntent {StopID}
 GetBusIntent bus {BusID}
