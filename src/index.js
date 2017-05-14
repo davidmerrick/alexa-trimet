@@ -30,6 +30,23 @@ const handlers = {
         let slots = this.event.request.intent.slots;
         let stopId = parseInt(slots.StopID.value);
         let busId = parseInt(slots.BusID.value);
+
+        if(isNaN(stopId)){
+            console.error(`ERROR: stopId is NaN.`);
+            this.emit(':tell', "Sorry, an error occurred finding information about that stop.");
+            return;
+        }
+
+        if(isNaN(busId)){
+            console.error(`ERROR: busId is NaN.`);
+            if(isNaN(stopId)) {
+                this.emit(':tell', "Sorry, an error occurred finding information about that bus.");
+            } else {
+                this.emit(':tell', `Sorry, an error occurred finding information about that bus at stop ${stopId}.`);
+            };
+            return;
+        }
+
         triMetAPIInstance.getNextArrivalForBus(stopId, busId)
             .then(arrival => {
                 let minutesRemaining = arrival.getMinutesUntilArrival();
@@ -47,6 +64,13 @@ const handlers = {
     'GetAllNextArrivalsIntent': function(){
         let slots = this.event.request.intent.slots;
         let stopId = parseInt(slots.StopID.value);
+
+        if(isNaN(stopId)){
+            console.error(`ERROR: stopId is NaN.`);
+            this.emit(':tell', "Sorry, an error occurred finding information about that stop.");
+            return;
+        }
+
         triMetAPIInstance.getSortedFilteredArrivals(stopId)
             .then(arrivals => {
                 let responseText = SpeechHelper.buildArrivalsResponse(stopId, arrivals);
