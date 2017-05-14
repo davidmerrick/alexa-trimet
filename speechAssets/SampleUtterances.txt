@@ -1,14 +1,17 @@
-GetSingleNextArrivalIntent get arrivals for bus {BusID} at stop {StopID}
-GetSingleNextArrivalIntent arrivals for bus {BusID} at stop {StopID}
-GetSingleNextArrivalIntent bus {BusID} stop {StopID}
-GetSingleNextArrivalIntent stop {StopID} bus {BusID}
-GetSingleNextArrivalIntent bus {BusID} stop {StopID} arrivals
-GetSingleNextArrivalIntent stop {StopID} bus {BusID} arrivals
+GetAllNextArrivalsIntent about stop {StopID}
+GetSingleNextArrivalIntent get next arrivals for bus {BusID} at stop {StopID}
+GetAllNextArrivalsIntent get arrivals for stop {StopID}
 
+GetSingleNextArrivalIntent get arrivals for bus {BusID} at stop {StopID}
+GetSingleNextArrivalIntent for arrivals for bus {BusID} at stop {StopID}
+GetSingleNextArrivalIntent about bus {BusID} stop {StopID}
+GetSingleNextArrivalIntent for stop {StopID} bus {BusID}
+GetSingleNextArrivalIntent for bus {BusID} stop {StopID} arrivals
+GetSingleNextArrivalIntent for stop {StopID} bus {BusID} arrivals
 GetAllNextArrivalsIntent get arrivals for stop {StopID}
 GetAllNextArrivalsIntent get stop {StopID}
 GetAllNextArrivalsIntent get stop {StopID} arrivals
 GetAllNextArrivalsIntent arrivals at stop {StopID}
-GetAllNextArrivalsIntent stop {StopID} arrivals
-GetAllNextArrivalsIntent stop {StopID}
+GetAllNextArrivalsIntent about stop {StopID} arrivals
 GetAllNextArrivalsIntent about stop {StopID}
+GetBusIntent bus {BusID}

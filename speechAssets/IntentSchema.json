@@ -1,7 +1,6 @@
 {
   "intents": [
     {
-      "intent": "GetSingleNextArrivalIntent",
       "slots": [
         {
           "name": "StopID",
@@ -11,16 +10,26 @@
           "name": "BusID",
           "type": "AMAZON.NUMBER"
         }
-      ]
+      ],
+      "intent": "GetSingleNextArrivalIntent"
     },
     {
-      "intent": "GetAllNextArrivalsIntent",
       "slots": [
         {
           "name": "StopID",
           "type": "AMAZON.NUMBER"
         }
-      ]
+      ],
+      "intent": "GetAllNextArrivalsIntent"
+    },
+    {
+      "slots": [
+        {
+          "name": "BusID",
+          "type": "AMAZON.NUMBER"
+        }
+      ],
+      "intent": "GetBusIntent"
     },
     {
       "intent": "AMAZON.HelpIntent"

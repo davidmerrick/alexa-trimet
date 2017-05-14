@@ -26,6 +26,18 @@ const handlers = {
         let speechOutput = "Okay";
         this.emit(':tell', speechOutput);
     },
+    'GetBusIntent': function(){
+        let slots = this.event.request.intent.slots;
+        let busId = parseInt(slots.BusID.value);
+
+        if(isNaN(busId)){
+            this.emit(':tell', "Sorry, I was not able to find information about that bus.");
+            return;
+        }
+
+        let repromptText = "Which stop would you like to know about?";
+        this.emit(':ask', `I can get information about bus ${busId} for you. ${repromptText}`, repromptText);
+    },
     'GetSingleNextArrivalIntent': function(){
         let slots = this.event.request.intent.slots;
         let stopId = parseInt(slots.StopID.value);
