@@ -33,16 +33,16 @@ const handlers = {
 
         if(isNaN(stopId)){
             console.error(`ERROR: stopId is NaN.`);
-            this.emit(':tell', "Sorry, an error occurred finding information about that stop.");
+            this.emit(':tell', "Sorry, I was not able to find information about that stop.");
             return;
         }
 
         if(isNaN(busId)){
             console.error(`ERROR: busId is NaN.`);
             if(isNaN(stopId)) {
-                this.emit(':tell', "Sorry, an error occurred finding information about that bus.");
+                this.emit(':tell', "Sorry, I was not able to find information about that bus.");
             } else {
-                this.emit(':tell', `Sorry, an error occurred finding information about that bus at stop ${stopId}.`);
+                this.emit(':tell', `Sorry, I was not able to find information about that bus at stop ${stopId}.`);
             };
             return;
         }
@@ -67,7 +67,7 @@ const handlers = {
 
         if(isNaN(stopId)){
             console.error(`ERROR: stopId is NaN.`);
-            this.emit(':tell', "Sorry, an error occurred finding information about that stop.");
+            this.emit(':tell', "Sorry, I was not able to find information about that stop.");
             return;
         }
 
