@@ -11,12 +11,12 @@ const triMetAPIInstance = new TriMetAPI(process.env.TRIMET_API_KEY);
 // Note: these functions can't be ES6 arrow functions; "this" ends up undefined if you do that.
 const handlers = {
     'LaunchRequest': function(){
-        let speechOutput = `Welcome to ${INVOCATION_NAME}. I can retrieve arrival times for bus and train stops in Portland, Oregon.`;
-        this.emit(':tell', speechOutput);
+        let speechOutput = `Welcome to ${INVOCATION_NAME}. I can retrieve arrival times for bus stops in Portland, Oregon. Which stop would you like information about?`;
+        this.emit(':ask', speechOutput, "Which stop would you like information about?");
     },
     'AMAZON.HelpIntent': function(){
-        let speechOutput = `Welcome to ${INVOCATION_NAME}. I can retrieve arrival times for bus and train stops in Portland, Oregon.`;
-        this.emit(':tell', speechOutput);
+        let speechOutput = `Welcome to ${INVOCATION_NAME}. I can retrieve arrival times for bus stops in Portland, Oregon. Which stop would you like information about?`;
+        this.emit(':ask', speechOutput, "Which stop would you like information about?");
     },
     'AMAZON.StopIntent': function(){
         let speechOutput = "Goodbye";
