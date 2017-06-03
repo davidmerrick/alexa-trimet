@@ -4,7 +4,7 @@
       "slots": [
         {
           "name": "StopID",
-          "type": "AMAZON.NUMBER"
+          "type": "LIST_OF_STOPS"
         },
         {
           "name": "BusID",
@@ -17,7 +17,7 @@
       "slots": [
         {
           "name": "StopID",
-          "type": "AMAZON.NUMBER"
+          "type": "LIST_OF_STOPS"
         }
       ],
       "intent": "GetAllNextArrivalsIntent"
