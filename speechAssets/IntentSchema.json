@@ -8,7 +8,7 @@
         },
         {
           "name": "BusID",
-          "type": "AMAZON.NUMBER"
+          "type": "LIST_OF_ROUTES"
         }
       ],
       "intent": "GetSingleNextArrivalIntent"
@@ -26,7 +26,7 @@
       "slots": [
         {
           "name": "BusID",
-          "type": "AMAZON.NUMBER"
+          "type": "LIST_OF_ROUTES"
         }
       ],
       "intent": "GetBusIntent"
