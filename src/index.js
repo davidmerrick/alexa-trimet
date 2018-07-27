@@ -1,6 +1,6 @@
 'use strict';
 
-import Alexa from 'alexa-sdk'
+import Alexa from 'ask-sdk-core'
 import TriMetAPI from 'trimet-api-client'
 import SpeechHelper from './utils/SpeechHelper'
 
@@ -9,70 +9,149 @@ const APP_ID = process.env.APP_ID;
 const triMetAPIInstance = new TriMetAPI(process.env.TRIMET_API_KEY);
 
 // Note: these functions can't be ES6 arrow functions; "this" ends up undefined if you do that.
-const handlers = {
-    'LaunchRequest': function(){
+const LaunchRequestHandler = {
+    canHandle(handlerInput) {
+        return handlerInput.requestEnvelope.request.type === 'LaunchRequest';
+    },
+    handle(handlerInput) {
+        let speechText = `Welcome to ${INVOCATION_NAME}. I can retrieve arrival times for bus stops in Portland, Oregon. Which stop would you like information about?`;
+        return handlerInput.responseBuilder
+            .speak(speechText)
+            .reprompt(speechText)
+            .withSimpleCard(INVOCATION_NAME, speechText)
+            .getResponse();
+    }
+};
+
+const HelpIntentHandler = {
+    canHandle(handlerInput) {
+        return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+            && handlerInput.requestEnvelope.request.intent.name === 'AMAZON.HelpIntent';
+    },
+    handle(handlerInput) {
         let speechOutput = `Welcome to ${INVOCATION_NAME}. I can retrieve arrival times for bus stops in Portland, Oregon. Which stop would you like information about?`;
-        this.emit(':ask', speechOutput, "Which stop would you like information about?");
+        return handlerInput.responseBuilder
+            .speak(speechText)
+            .reprompt(speechText)
+            .withSimpleCard(INVOCATION_NAME, speechText)
+            .getResponse();
+    }
+};
+
+const CancelIntentHandler = {
+    canHandle(handlerInput) {
+        return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+            && (handlerInput.requestEnvelope.request.intent.name === 'AMAZON.CancelIntent')
     },
-    'AMAZON.HelpIntent': function(){
-        let speechOutput = `Welcome to ${INVOCATION_NAME}. I can retrieve arrival times for bus stops in Portland, Oregon. Which stop would you like information about?`;
-        this.emit(':ask', speechOutput, "Which stop would you like information about?");
+    handle(handlerInput) {
+        const speechText = 'Okay';
+        return handlerInput.responseBuilder
+            .speak(speechText)
+            .withSimpleCard(INVOCATION_NAME, speechText)
+            .getResponse();
+    }
+};
+
+const StopIntentHandler = {
+    canHandle(handlerInput) {
+        return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+            && (handlerInput.requestEnvelope.request.intent.name === 'AMAZON.StopIntent')
     },
-    'AMAZON.StopIntent': function(){
-        let speechOutput = "Goodbye";
-        this.emit(':tell', speechOutput);
+    handle(handlerInput) {
+        const speechText = 'Goodbye';
+        return handlerInput.responseBuilder
+            .speak(speechText)
+            .withSimpleCard(INVOCATION_NAME, speechText)
+            .getResponse();
+    }
+};
+
+const GetBusIntentHandler = {
+    canHandle(handlerInput) {
+        return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+            && (handlerInput.requestEnvelope.request.intent.name === 'GetBusIntent')
     },
-    'AMAZON.CancelIntent': function(){
-        let speechOutput = "Okay";
-        this.emit(':tell', speechOutput);
-    },
-    'GetBusIntent': function(){
+    handle(handlerInput) {
         let slots = this.event.request.intent.slots;
         let busId = parseInt(slots.BusID.value);
 
         if(isNaN(busId)){
-            this.emit(':tell', "Sorry, I was not able to find information about that bus.");
-            return;
+            let speechText = "Sorry, I was not able to find information about that bus.";
+            return handlerInput.responseBuilder
+                .speak(speechText)
+                .withSimpleCard(INVOCATION_NAME, speechText)
+                .getResponse();
         }
 
+        let speechText = `I can get information about bus ${busId} for you. ${repromptText}`;
         let repromptText = "Which stop would you like to know about?";
-        this.emit(':ask', `I can get information about bus ${busId} for you. ${repromptText}`, repromptText);
+        return handlerInput.responseBuilder
+            .speak(speechText)
+            .reprompt(repromptText)
+            .withSimpleCard(INVOCATION_NAME, speechText)
+            .getResponse();
+    }
+};
+
+const GetSingleNextArrivalIntent = {
+    canHandle(handlerInput) {
+        return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+            && (handlerInput.requestEnvelope.request.intent.name === 'GetSingleNextArrivalIntent')
     },
-    'GetSingleNextArrivalIntent': function(){
+    handle(handlerInput) {
         let slots = this.event.request.intent.slots;
-        let stopId = parseInt(slots.StopID.value);
         let busId = parseInt(slots.BusID.value);
 
-        if(isNaN(stopId)){
-            console.error(`ERROR: stopId is NaN.`);
-            this.emit(':tell', "Sorry, I was not able to find information about that stop.");
-            return;
+        if(isNaN(busId)){
+            let speechText = "Sorry, I was not able to find information about that bus.";
+            return handlerInput.responseBuilder
+                .speak(speechText)
+                .withSimpleCard(INVOCATION_NAME, speechText)
+                .getResponse();
         }
+
+        let speechText = `I can get information about bus ${busId} for you. ${repromptText}`;
+        let repromptText = "Which stop would you like to know about?";
+        return handlerInput.responseBuilder
+            .speak(speechText)
+            .reprompt(repromptText)
+            .withSimpleCard(INVOCATION_NAME, speechText)
+            .getResponse();
+    }
+};
+
+
+// Todo: implement this
+const GetAllNextArrivalsIntent = {
+    canHandle(handlerInput) {
+        return handlerInput.requestEnvelope.request.type === 'IntentRequest'
+            && (handlerInput.requestEnvelope.request.intent.name === 'GetBusIntent')
+    },
+    handle(handlerInput) {
+        let slots = this.event.request.intent.slots;
+        let busId = parseInt(slots.BusID.value);
 
         if(isNaN(busId)){
-            console.error(`ERROR: busId is NaN.`);
-            if(isNaN(stopId)) {
-                this.emit(':tell', "Sorry, I was not able to find information about that bus.");
-            } else {
-                this.emit(':tell', `Sorry, I was not able to find information about that bus at stop ${stopId}.`);
-            };
-            return;
+            let speechText = "Sorry, I was not able to find information about that bus.";
+            return handlerInput.responseBuilder
+                .speak(speechText)
+                .withSimpleCard(INVOCATION_NAME, speechText)
+                .getResponse();
         }
 
-        triMetAPIInstance.getNextArrivalForBus(stopId, busId)
-            .then(arrival => {
-                let minutesRemaining = arrival.getMinutesUntilArrival();
-                let minutePronunciation = SpeechHelper.getMinutePronunciation(minutesRemaining);
-                let responseText = `${minutePronunciation} remaining until bus ${busId} arrives at stop ${stopId}.`;
-                this.emit(':tell', responseText);
-                return;
-            })
-            .catch(err => {
-                console.error(err);
-                this.emit(':tell', `Sorry, an error occurred retrieving arrival times for bus ${busId} at stop ${stopId}.`);
-                return;
-            });
-    },
+        let speechText = `I can get information about bus ${busId} for you. ${repromptText}`;
+        let repromptText = "Which stop would you like to know about?";
+        return handlerInput.responseBuilder
+            .speak(speechText)
+            .reprompt(repromptText)
+            .withSimpleCard(INVOCATION_NAME, speechText)
+            .getResponse();
+    }
+};
+
+
+const handlers = {
+
     'GetAllNextArrivalsIntent': function(){
         let slots = this.event.request.intent.slots;
         let stopId = parseInt(slots.StopID.value);
