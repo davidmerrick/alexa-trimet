@@ -19,7 +19,7 @@ class SpeechHelper {
     }
 
     static buildArrivalsResponse(stopId, arrivals) {
-        var speechOutput = `At stop ${stopId}, next arrivals are: `;
+        var speechOutput = `At stop <say-as interpret-as="digits">${stopId}</say-as>, next arrivals are: `;
         for (var i = 0; i < arrivals.length - 1; i++) {
             speechOutput += `${this.buildArrivalResponse(arrivals[i])}, `
         }

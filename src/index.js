@@ -4,9 +4,13 @@ import Alexa from 'alexa-sdk'
 import TriMetAPI from 'trimet-api-client'
 import SpeechHelper from './utils/SpeechHelper'
 
+require('dotenv').config()
+
 const INVOCATION_NAME = process.env.INVOCATION_NAME || "Portland Bus";
 const APP_ID = process.env.APP_ID;
-const triMetAPIInstance = new TriMetAPI(process.env.TRIMET_API_KEY);
+
+const TRIMET_API_KEY = process.env.TRIMET_API_KEY;
+const triMetAPIInstance = new TriMetAPI(TRIMET_API_KEY);
 
 // Note: these functions can't be ES6 arrow functions; "this" ends up undefined if you do that.
 const handlers = {
