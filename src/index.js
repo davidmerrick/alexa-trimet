@@ -1,6 +1,7 @@
 'use strict';
 
 import Alexa from 'alexa-sdk'
+import AWS from 'aws-sdk'
 import TriMetAPI from 'trimet-api-client'
 import SpeechHelper from './utils/SpeechHelper'
 
@@ -8,9 +9,19 @@ require('dotenv').config()
 
 const INVOCATION_NAME = process.env.INVOCATION_NAME || "Portland Bus";
 const APP_ID = process.env.APP_ID;
+const AWS_REGION = process.env.AWS_REGION || "us-west-2";
+const DYNAMODB_ENDPOINT = process.env.DYNAMODB_ENDPOINT || "http://localhost:8000";
+
+const TABLE_NAME = process.env.TABLE_NAME || "portland-bus";
 
 const TRIMET_API_KEY = process.env.TRIMET_API_KEY;
 const triMetAPIInstance = new TriMetAPI(TRIMET_API_KEY);
+
+const dynamoConfig = {
+    region: AWS_REGION,
+    endpoint: DYNAMODB_ENDPOINT
+}
+const docClient = new AWS.DynamoDB.DocumentClient(dynamoConfig);
 
 // Note: these functions can't be ES6 arrow functions; "this" ends up undefined if you do that.
 const handlers = {
@@ -102,8 +113,9 @@ const handlers = {
             });
     },
     'SaveStopIntent': function () {
-        let slots = this.event.request.intent.slots;
-        console.info(`SaveStopIntent invoked with slots: ${slots}`);
+        const { slots } = this.event.request.intent;
+        const { userId } = this.event.session.user;
+        console.info(`SaveStopIntent invoked with StopId: ${slots.StopID.value}, userId: ${userId}`);
 
         if (slots.StopID == null || isNaN(parseInt(slots.StopID.value))) {
             console.error(`ERROR: stopId is NaN.`);
@@ -111,8 +123,28 @@ const handlers = {
             return;
         }
 
-        let stopId = parseInt(slots.StopID.value);
-        this.emit(':tell', `Saved stop ${SpeechHelper.pronounceStop(stopId)}.`);
+        const stopId = parseInt(slots.StopID.value);
+
+        const dynamoParams = {
+            TableName: TABLE_NAME,
+            Item: {
+                UserId: userId,
+                StopId: stopId
+            }
+        };
+
+        docClient.put(dynamoParams).promise()
+            .then(data => {
+                this.emit(':tell', `Saved stop ${SpeechHelper.pronounceStop(stopId)}.`);
+            }).catch(err => {
+                console.error(err);
+                this.emit(':tell', "Sorry, I'm not able to save that stop.");
+            })
+    },
+    'MyStopIntent': function () {
+        const { userId } = this.event.session.user;
+
+        this.emit(':tell', `Getting next arrivals for my stop.`);
     }
 };
 
