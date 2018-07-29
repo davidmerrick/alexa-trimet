@@ -144,7 +144,30 @@ const handlers = {
     'MyStopIntent': function () {
         const { userId } = this.event.session.user;
 
-        this.emit(':tell', `Getting next arrivals for my stop.`);
+        const dynamoParams = {
+            TableName: TABLE_NAME,
+            Key: {
+                UserId: userId
+            }
+        };
+
+        docClient.get(dynamoParams).promise()
+            .then(data => {
+                console.info(`Success: Retrieved data for user ${userId}`);
+                const stopId = data.Item.StopId;
+                console.info(`stopId: ${stopId}`);
+                return triMetAPIInstance.getSortedFilteredArrivals(stopId)
+                    .then(arrivals => {
+                        let responseText = SpeechHelper.buildArrivalsResponse(stopId, arrivals);
+                        this.emit(':tell', responseText);
+                        return;
+                    })
+            })
+            .catch(err => {
+                console.error(err);
+                this.emit(':tell', `Sorry, an error occurred retrieving arrival times for your stop`);
+                return;
+            });
     }
 };
 
