@@ -53,6 +53,9 @@ const handlers = {
         let repromptText = "Which stop would you like to know about?";
         this.emit(':ask', `I can get information about bus ${busId} for you. ${repromptText}`, repromptText);
     },
+    'SessionEndedRequest': function () {
+        this.emit(':tell', "Goodbye");
+    },
     'GetSingleNextArrivalIntent': function () {
         let slots = this.event.request.intent.slots;
         let stopId = parseInt(slots.StopID.value);
@@ -113,8 +116,8 @@ const handlers = {
             });
     },
     'SaveStopIntent': function () {
-        const { slots } = this.event.request.intent;
-        const { userId } = this.event.session.user;
+        const {slots} = this.event.request.intent;
+        const {userId} = this.event.session.user;
         console.info(`SaveStopIntent invoked with StopId: ${slots.StopID.value}, userId: ${userId}`);
 
         if (slots.StopID == null || isNaN(parseInt(slots.StopID.value))) {
@@ -137,12 +140,12 @@ const handlers = {
             .then(data => {
                 this.emit(':tell', `Saved stop ${SpeechHelper.pronounceStop(stopId)}.`);
             }).catch(err => {
-                console.error(err);
-                this.emit(':tell', "Sorry, I'm not able to save that stop.");
-            })
+            console.error(err);
+            this.emit(':tell', "Sorry, I'm not able to save that stop.");
+        })
     },
     'MyStopIntent': function () {
-        const { userId } = this.event.session.user;
+        const {userId} = this.event.session.user;
 
         const dynamoParams = {
             TableName: TABLE_NAME,
