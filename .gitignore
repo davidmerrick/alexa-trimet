@@ -3,3 +3,6 @@
 node_modules
 dist
 conf
+asl-config.json
+.env
+yarn.lock

@@ -19,13 +19,17 @@ class SpeechHelper {
     }
 
     static buildArrivalsResponse(stopId, arrivals) {
-        var speechOutput = `At stop ${stopId}, next arrivals are: `;
+        var speechOutput = `At stop ${this.pronounceStop(stopId)}, next arrivals are: `;
         for (var i = 0; i < arrivals.length - 1; i++) {
             speechOutput += `${this.buildArrivalResponse(arrivals[i])}, `
         }
         let last = arrivals.length - 1;
         speechOutput += `and ${this.buildArrivalResponse(arrivals[last])}.`;
         return speechOutput;
+    }
+
+    static pronounceStop(stopId){
+        return `<say-as interpret-as="digits">${stopId}</say-as>`;
     }
 }
 
