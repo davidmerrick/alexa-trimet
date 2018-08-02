@@ -137,12 +137,14 @@ const handlers = {
             }
         };
 
+        console.info(`Saving stop ${stopId}`);
         docClient.put(dynamoParams).promise()
             .then(data => {
+                console.info(`Success: Saved stop ${stopId}`);
                 this.emit(':tell', `Saved stop ${SpeechHelper.pronounceStop(stopId)}.`);
             }).catch(err => {
-            console.error(err);
-            this.emit(':tell', "Sorry, I'm not able to save that stop.");
+                console.error(err);
+                this.emit(':tell', "Sorry, I'm not able to save that stop.");
         })
     },
     'MyStopIntent': function () {
