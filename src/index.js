@@ -142,9 +142,11 @@ const handlers = {
             .then(data => {
                 console.info(`Success: Saved stop ${stopId}`);
                 this.emit(':tell', `Saved stop ${SpeechHelper.pronounceStop(stopId)}.`);
+                return;
             }).catch(err => {
                 console.error(err);
                 this.emit(':tell', "Sorry, I'm not able to save that stop.");
+                return;
         })
     },
     'MyStopIntent': function () {
