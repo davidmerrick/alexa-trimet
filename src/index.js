@@ -10,6 +10,7 @@ require('dotenv').config()
 const INVOCATION_NAME = process.env.INVOCATION_NAME || "Portland Bus";
 const APP_ID = process.env.APP_ID;
 const AWS_REGION = process.env.AWS_REGION || "us-west-2";
+const DYNAMODB_REGION = process.env.DYNAMO_REGION || AWS_REGION;
 const DYNAMODB_ENDPOINT = process.env.DYNAMODB_ENDPOINT || "http://localhost:8000";
 
 const TABLE_NAME = process.env.TABLE_NAME || "portland-bus";
@@ -18,7 +19,7 @@ const TRIMET_API_KEY = process.env.TRIMET_API_KEY;
 const triMetAPIInstance = new TriMetAPI(TRIMET_API_KEY);
 
 const dynamoConfig = {
-    region: AWS_REGION,
+    region: DYNAMODB_REGION,
     endpoint: DYNAMODB_ENDPOINT
 }
 const docClient = new AWS.DynamoDB.DocumentClient(dynamoConfig);
