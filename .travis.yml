@@ -13,6 +13,7 @@ branches:
   - stg
   - prd
 env:
+  - AWS_REGION=us-west-2
   - LAMBDA_NAME=PortlandBus-stg
 notifications:
   slack:
