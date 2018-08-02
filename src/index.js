@@ -180,7 +180,7 @@ const handlers = {
 };
 
 exports.handler = (event, context, callback) => {
-    let alexa = Alexa.handler(event, context);
+    const alexa = Alexa.handler(event, context, callback);
     // Only set appId if not debugging
     if ('undefined' === typeof process.env.DEBUG) {
         alexa.appId = APP_ID;
