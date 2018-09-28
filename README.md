@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/davidmerrick/alexa-trimet.svg?branch=master)](https://travis-ci.org/davidmerrick/alexa-trimet)
 
-**Note: I ultimately decided to rewrite this in Java. You can find that here: https://github.com/davidmerrick/PortlandBus-Java.**
+**Note: I ultimately decided to rewrite this in Java. You can find that here: https://github.com/davidmerrick/PortlandBus.**
 
 Source code for my [Portland Bus Alexa Skill](https://www.amazon.com/David-Merrick-Portland-Bus/dp/B01NB9LCZK/ref=sr_1_2?ie=UTF8&qid=1504987577&sr=8-2&keywords=portland+bus). It retrieves TriMet Arrival times and is written in NodeJS. This is meant to be run as an AWS Lambda function, with the following environment variables set:
 
